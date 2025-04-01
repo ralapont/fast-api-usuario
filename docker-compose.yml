@@ -1,0 +1,24 @@
+services:
+  my_sql:
+    container_name: my_sql
+    image: mysql:9.2.0
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=usuarioadmin
+      - MYSQL_PASSWORD=usuarioadmin
+      - MYSQL_DATABASE=usuario      
+    volumes:
+      - /home/ralapont/workspace/usuarios/mysql/volumen:/docker-entrypoint-initdb.d/:ro
+      - /home/ralapont/workspace/usuarios/mysql/volumen/mysql_data/:/var/lib/mysql
+  models:
+    build: .
+    container_name: models
+    command: python -m app.v1.scripts.create_db
+    ports:
+      - 8000:80
+    volumes:
+      - /home/ralapont/workspace/usuarios/mysql/volumen/models:/api
+    depends_on:
+      - my_sql

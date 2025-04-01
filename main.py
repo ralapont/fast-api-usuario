@@ -16,5 +16,5 @@ app.include_router(clase_router)
 
 @app.get("/")
 async def root():
-    fastapi_logger.info("Hello world")
-    return {"greeting":"Hello world"}
+    fastapi_logger.info("Uvicorn is alive")
+    return {"Uvicorn": "I'm alive"}
