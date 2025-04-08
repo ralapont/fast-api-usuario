@@ -4,6 +4,8 @@ from fastapi import status
 from fastapi import Body
 from fastapi.security import OAuth2PasswordRequestForm
 
+from fastapi.logger import logger as fastapi_logger
+
 from app.v1.schema import user_schema
 from app.v1.service import user_service
 from app.v1.service import auth_service
@@ -38,6 +40,87 @@ def create_user(user: user_schema.UserRegister = Body(...)):
     - user: User info
     """
     return user_service.create_user(user)
+
+@router.get(
+    "/user",
+    status_code=status.HTTP_200_OK,
+    response_model=list[user_schema.User],
+    dependencies=[Depends(get_db)],
+    summary="get all users"
+)
+def get_users():
+    """
+    ## Get the users in the app
+
+    ### Returns
+    - users: List of Users with the info
+    """
+    return user_service.get_users()
+
+@router.get(
+    "/user/{id}",
+    tags=["user"],
+    status_code=status.HTTP_200_OK,
+    response_model=user_schema.User,
+    dependencies=[Depends(get_db)]
+)
+def get_user(id: int):
+    """
+    ## Get user by Id
+
+    ### Args
+    The app can receive next fields into path variable
+    - id: id of the user
+
+    ### Returns
+    - user: User info
+    """
+    fastapi_logger.info(f"Get user with id {id}")
+    return user_service.get_user(id)
+
+@router.put(
+    "/user/{id}",
+    tags=["user"],
+    status_code=status.HTTP_200_OK,
+    response_model=user_schema.User,
+    dependencies=[Depends(get_db)]
+)
+def modify_user(id: int, user: user_schema.UserRegister = Body(...)):
+    """
+    ## Modify user by Id
+
+    ### Args
+    The app can receive next fields
+    - id: id of the user
+    - user: The app can receive next fields into a JSON
+        - email: A valid email
+        - username: Unique username
+        - password: Strong password for authentication
+
+    ### Returns
+    - user: User info
+    """
+    fastapi_logger.info(f"Modify user with id {id}")
+    return user_service.modify_user(id, user)
+
+@router.delete(
+    "/user/{id}",
+    tags=["user"],
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_db)]
+)
+def delete_user(id: int):
+    """
+    ## Delete user by Id
+
+    ### Args
+    The app can receive next fields
+    - id: id of the user
+
+    """
+    fastapi_logger.info(f"Delete user with id {id}")
+    user_service.delete_user(id)
+
 
 @router.post(
     "/login",

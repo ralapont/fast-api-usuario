@@ -59,3 +59,20 @@ def get_profesor(profesor_id: int):
     """
     fastapi_logger.info(f"Get profesor with id {profesor_id}")
     return profesor_service.get_profesor(profesor_id)
+
+@router.get(
+    "/",
+    tags=["profesor"],
+    status_code=status.HTTP_200_OK,
+    response_model=list[profesor_schema.Profesor],
+    dependencies=[Depends(get_db)]
+)
+def get_profesor():
+    """
+    ## Get all profesores in the app
+
+    ### Returns
+    - list of profesor: Profesor info for item
+    """
+    fastapi_logger.info(f"Get profesores")
+    return profesor_service.get_profesores()

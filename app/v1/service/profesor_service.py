@@ -32,5 +32,19 @@ def get_profesor(profesor_id: int):
         email=db_profesor.email
     )    
 
+def get_profesores():
+
+    db_profesors = ProfesorModel.select()
+
+    return map(lambda x : convery_entity_to_schema(x), db_profesors)
+
+def convery_entity_to_schema(profesor: ProfesorModel):
+    return profesor_schema.Profesor(
+        profesor_id = profesor.profesor_id,
+        nombre = profesor.nombre,
+        apellido= profesor.apellido,
+        telefono = profesor.telefono,
+        email = profesor.email
+    )    
 
 

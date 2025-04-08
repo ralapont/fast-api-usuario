@@ -26,7 +26,7 @@ class PeeweeConnectionState(pw._ConnectionState):
     def __getattr__(self, name):
         return self._state.get()[name]
     
-db = pw.MySQLDatabase(DB_NAME, host=DB_HOST, port=3306, user=DB_USER, passwd=DB_PASS)
+db = pw.MySQLDatabase(DB_NAME, host=DB_HOST, port=DB_PORT, user=DB_USER, passwd=DB_PASS)
 
 db._state = PeeweeConnectionState()
 
