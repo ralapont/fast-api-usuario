@@ -76,3 +76,49 @@ def get_profesor():
     """
     fastapi_logger.info(f"Get profesores")
     return profesor_service.get_profesores()
+
+@router.put(
+    "/{profesor_id}",
+    tags=["profesor"],
+    status_code=status.HTTP_200_OK,
+    response_model=profesor_schema.Profesor,
+    dependencies=[Depends(get_db)]
+)
+def modify_user(profesor_id: int, 
+                profesor: profesor_schema.ProfesorBase = Body(...),
+                current_user: User = Depends(get_current_user)):
+    """
+    ## Modify profesor by Id
+
+    ### Args
+    The app can receive next fields
+    - profesor_id: id of the profesor
+    - profesor: The app can receive next fields into a JSON
+        - nombre: Name of the profesor
+        - apellido: Last name of the profesor
+        - telefono: Phone number of the profesor
+        - email: Email of the profesor
+
+    ### Returns
+    - profesor: Profesor info
+    """
+    fastapi_logger.info(f"Modify profesor with id {profesor_id}")
+    return profesor_service.modify_profesor(profesor_id, profesor)
+
+@router.delete(
+    "/{profesor_id}",
+    tags=["profesor"],
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_db)]
+)
+def delete_profesor(profesor_id: int, current_user: User = Depends(get_current_user)):
+    """
+    ## Delete profesor by Id
+
+    ### Args
+    The app can receive next fields
+    - profesor_id: id of the profesor
+
+    """
+    fastapi_logger.info(f"Delete profesor with id {profesor_id}")
+    profesor_service.delete_profesor(profesor_id)
