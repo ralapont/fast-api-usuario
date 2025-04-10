@@ -13,12 +13,12 @@ class ClaseBase(BaseModel):
     )
     fecha_inicio_curso: str = Field(
         ...,
-        description="Formato: DD-MM-YYYY",
+        description="Formato: YYYY-MM-DD",
         example="25-01-2025"
     )
     fecha_fin_curso: str = Field(
         ...,
-        description="Formato: DD-MM-YYYY",
+        description="Formato: YYYY-MM-DD",
         example="28-01-2025"
     )
     horario: str = Field(
@@ -29,30 +29,30 @@ class ClaseBase(BaseModel):
     )
     profesor_id: int = Field(
         ...,
-        example="5"
+        example=5
     )
 
     @model_validator(mode="after")
     def validar_fechas(cls, valores):
         try:
-            # Convertimos ambas fechas al formato esperado (DD-MM-YYYY)
-            fecha_inicio_curso = datetime.strptime(valores.fecha_inicio_curso, "%d-%m-%Y")
-            fecha_fin_curso = datetime.strptime(valores.fecha_fin_curso, "%d-%m-%Y")
+            # Convertimos ambas fechas al formato esperado (YYYY-MM-DD)
+            fecha_inicio_curso = datetime.strptime(valores.fecha_inicio_curso, "%Y-%m-%d")
+            fecha_fin_curso = datetime.strptime(valores.fecha_fin_curso, "%Y-%m-%d")
         except ValueError:
-            raise ValueError("Ambas fechas deben estar en el formato DD-MM-YYYY.")
+            raise ValueError("Ambas fechas deben estar en el formato YYYY-MM-DD.")
         
         # Validamos que la fecha de inicio sea anterior a la fecha de fin
         if fecha_inicio_curso >= fecha_fin_curso:
             raise ValueError("La fecha de inicio debe ser anterior a la fecha de fin.")
 
-        valores.fecha_inicio_curso = fecha_inicio_curso.strftime("%d-%m-%Y")
-        valores.fecha_fin_curso = fecha_fin_curso.strftime("%d-%m-%Y")        
+        valores.fecha_inicio_curso = fecha_inicio_curso.strftime("%Y-%m-%d")
+        valores.fecha_fin_curso = fecha_fin_curso.strftime("%Y-%m-%d")        
 
         return valores
     
 class Clase(ClaseBase):
     clase_id: int = Field(
         ...,
-        example="5"
+        example=5
     )
 

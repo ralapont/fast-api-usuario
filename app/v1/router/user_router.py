@@ -59,7 +59,6 @@ def get_users():
 
 @router.get(
     "/user/{id}",
-    tags=["user"],
     status_code=status.HTTP_200_OK,
     response_model=user_schema.User,
     dependencies=[Depends(get_db)]
@@ -80,7 +79,6 @@ def get_user(id: int):
 
 @router.put(
     "/user/{id}",
-    tags=["user"],
     status_code=status.HTTP_200_OK,
     response_model=user_schema.User,
     dependencies=[Depends(get_db)]
@@ -105,7 +103,6 @@ def modify_user(id: int, user: user_schema.UserRegister = Body(...)):
 
 @router.delete(
     "/user/{id}",
-    tags=["user"],
     status_code=status.HTTP_204_NO_CONTENT,
     dependencies=[Depends(get_db)]
 )
