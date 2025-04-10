@@ -14,7 +14,7 @@ app.include_router(user_router)
 app.include_router(profesor_router)
 app.include_router(clase_router)
 
-@app.get("/")
+@app.options("/")
 async def root():
     fastapi_logger.info("Uvicorn is alive")
     return {"Uvicorn": "I'm alive"}

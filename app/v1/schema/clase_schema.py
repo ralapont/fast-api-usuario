@@ -14,12 +14,12 @@ class ClaseBase(BaseModel):
     fecha_inicio_curso: str = Field(
         ...,
         description="Formato: YYYY-MM-DD",
-        example="25-01-2025"
+        example="2025-04-01"
     )
     fecha_fin_curso: str = Field(
         ...,
         description="Formato: YYYY-MM-DD",
-        example="28-01-2025"
+        example="2025-05-01"
     )
     horario: str = Field(
         ...,
