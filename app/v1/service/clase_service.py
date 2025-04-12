@@ -21,31 +21,17 @@ def create_clase(clase: clase_schema.ClaseRequest):
     return clase_schema.Clase.model_validate(db_clase, from_attributes=True)
 
 def modify_clase(clase_id: int, clase: clase_schema.ClaseRequest):
-    try:
-        row = ClaseModel.get(ClaseModel.clase_id==clase_id)
 
-    except ClaseModel.DoesNotExist:
+    query = ClaseModel.update(**clase.model_dump()).where(ClaseModel.clase_id == clase_id)
+    rows = query.execute()
+    if rows == 0:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Clase not found"
         )
 
-    try:
-        row.cod_curso=clase.cod_curso
-        row.fecha_inicio_curso=clase.fecha_inicio_curso
-        row.fecha_fin_curso=clase.fecha_fin_curso
-        row.horario=clase.horario
-        row.profesor_id=ProfesorModel.get(ProfesorModel.profesor_id==clase.profesor_id)
-    except ProfesorModel.DoesNotExist:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Profesor not found"
-        )
-
-
-    row.save()
-    new_clase = ClaseModel.get(ClaseModel.clase_id==row.clase_id)
-    return clase_schema.Clase.model_validate(new_clase, from_attributes=True)
+    db_clase = ClaseModel.get(ClaseModel.clase_id == clase_id)
+    return clase_schema.Clase.model_validate(db_clase, from_attributes=True)
 
 def delete_clase(clase_id: int):
     try:

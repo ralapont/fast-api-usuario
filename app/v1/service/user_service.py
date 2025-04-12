@@ -49,20 +49,17 @@ def get_user(id: id):
 
 def modify_user(id: int, user: user_schema.UserRegister):
     fastapi_logger.info(f"Get user with id {id}")
-    try:
-        db_user = UserModel.get(UserModel.user_id==id)
-    except UserModel.DoesNotExist:
+    
+    user.password = get_password_hash(user.password)
+    query = UserModel.update(**user.model_dump()).where(UserModel.user_id == id)
+    rows = query.execute()
+    if rows == 0:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-    
-    db_user.username = user.username
-    db_user.email = user.email
-    db_user.password = get_password_hash(user.password)
 
-    db_user.save()
-
+    db_user = UserModel.get(UserModel.user_id==id)
     return user_schema.User.model_validate(db_user, from_attributes=True)
 
 def delete_user(id: int):
