@@ -4,9 +4,9 @@ from app.v1.model.profesor_model import Profesor as ProfesorModel
 from app.v1.schema import profesor_schema
 
 def create_profesor(profesor: profesor_schema.ProfesorBase):
-    db_profesor = convert_schema_to_entity(profesor)    
-    db_profesor.save(db_profesor)
-    return convert_entity_to_schema(db_profesor)
+    db_profesor = ProfesorModel.create(**profesor.model_dump())
+    db_profesor.save()
+    return profesor_schema.Profesor.model_validate(db_profesor, from_attributes=True)
             
 def get_profesor(profesor_id: int):
 
@@ -18,12 +18,12 @@ def get_profesor(profesor_id: int):
             detail="Profesor not found"
         )
 
-    return convert_entity_to_schema(db_profesor)
+    return profesor_schema.Profesor.model_validate(db_profesor, from_attributes=True)
 
 def get_profesores():
 
     db_profesors = ProfesorModel.select()
-    return map(lambda x : convert_entity_to_schema(x), db_profesors)
+    return map(lambda x : profesor_schema.Profesor.model_validate(x, from_attributes=True), db_profesors)
 
 def modify_profesor(profesor_id: int, profesor: profesor_schema.ProfesorBase):
     try:
@@ -40,7 +40,7 @@ def modify_profesor(profesor_id: int, profesor: profesor_schema.ProfesorBase):
     db_profesor.email = profesor.email
     db_profesor.save()
     
-    return convert_entity_to_schema(db_profesor)
+    return profesor_schema.Profesor.model_validate(db_profesor, from_attributes=True)
 
 def delete_profesor(profesor_id: int):
     try:
@@ -53,21 +53,5 @@ def delete_profesor(profesor_id: int):
 
     db_profesor.delete_instance()
 
-def convert_entity_to_schema(profesor: ProfesorModel):
-    return profesor_schema.Profesor(
-        profesor_id = profesor.profesor_id,
-        nombre = profesor.nombre,
-        apellido= profesor.apellido,
-        telefono = profesor.telefono,
-        email = profesor.email
-    )
-
-def convert_schema_to_entity(profesor: profesor_schema.ProfesorBase):
-    return ProfesorModel(
-        nombre=profesor.nombre,
-        apellido=profesor.apellido,
-        telefono=profesor.telefono,
-        email=profesor.email
-    )    
 
 
