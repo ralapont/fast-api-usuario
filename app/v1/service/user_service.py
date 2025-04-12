@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status
 from fastapi.logger import logger as fastapi_logger
+from pydantic import ValidationError
 
 from passlib.context import CryptContext
 
@@ -21,32 +22,30 @@ def create_user(user: user_schema.UserRegister):
             detail=msg
         )
 
-    db_user = UserModel(
-        username=user.username,
-        email=user.email,
-        password=get_password_hash(user.password)
-    )
-
+    user.password = get_password_hash(user.password)
+    db_user = UserModel.create(**user.model_dump())
     db_user.save()
-
-    return convery_entity_to_schema(db_user)
+    return user_schema.User.model_validate(db_user, from_attributes=True)
 
 def get_users():
     db_users = UserModel.select()
-    return map(lambda x : convery_entity_to_schema(x), db_users)
+    return map(lambda x : user_schema.User.model_validate(x, from_attributes=True), db_users)
 
 def get_user(id: id):
 
     fastapi_logger.info(f"Get user with id {id}")
     try:
         db_user = UserModel.get(UserModel.user_id==id)
+        return user_schema.User.model_validate(db_user, from_attributes=True)
     except UserModel.DoesNotExist:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
+    except ValidationError as exc:
+        print(repr(exc.errors()[0]['type']))
 
-    return convery_entity_to_schema(db_user)
+
 
 def modify_user(id: int, user: user_schema.UserRegister):
     fastapi_logger.info(f"Get user with id {id}")
@@ -64,7 +63,7 @@ def modify_user(id: int, user: user_schema.UserRegister):
 
     db_user.save()
 
-    return convery_entity_to_schema(db_user)
+    return user_schema.User.model_validate(db_user, from_attributes=True)
 
 def delete_user(id: int):
     fastapi_logger.info(f"Get user with id {id}")
@@ -78,9 +77,3 @@ def delete_user(id: int):
     
     db_user.delete_instance()
         
-def convery_entity_to_schema(user: UserModel):
-    return user_schema.User(
-        id = user.user_id,
-        email = user.email,
-        username = user.username
-    )
