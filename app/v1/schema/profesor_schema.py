@@ -30,6 +30,6 @@ class ProfesorBase(BaseModel):
 class Profesor(ProfesorBase):
     profesor_id: int = Field(
         ...,
-        example="5"
+        example=5
     )
 

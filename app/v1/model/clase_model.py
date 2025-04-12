@@ -11,7 +11,7 @@ class Clase(pw.Model):
    fecha_inicio_curso = pw.DateField(formats=[fmt])
    fecha_fin_curso = pw.DateField(formats=[fmt])
    horario = pw.CharField()
-   profesor_id = pw.ForeignKeyField(ProfesorModel)
+   profesor = pw.ForeignKeyField(ProfesorModel)
 
    class Meta:
        database = db

@@ -20,7 +20,7 @@ router = APIRouter(prefix="/api/v1/clase")
     response_model=clase_schema.Clase,
     dependencies=[Depends(get_db)]
 )
-def create_clase(clase: clase_schema.ClaseBase = Body(...), current_user: User = Depends(get_current_user)):
+def create_clase(clase: clase_schema.ClaseRequest = Body(...), current_user: User = Depends(get_current_user)):
     """
     ## Create a new clase for a profesor in the app
 
@@ -103,7 +103,7 @@ def get_clase_by_profesor(profesor_id: int):
     dependencies=[Depends(get_db)]
 )
 def modify_user(clase_id: int, 
-                clase: clase_schema.ClaseBase = Body(...),
+                clase: clase_schema.ClaseRequest = Body(...),
                 current_user: User = Depends(get_current_user)):
     """
     ## Modify clase by Id
