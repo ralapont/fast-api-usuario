@@ -29,4 +29,4 @@ Crear las tablas
 ## Ejecución
     uvicorn main:app --log-config log.ini
 
-    ![alt text](image-1.png)
+![alt text](image-1.png)
