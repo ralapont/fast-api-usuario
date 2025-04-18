@@ -1,8 +1,7 @@
-# API crud that manage users, teachers and class
-
+# API crud que gestiona usuarios, profesores y clases
 Fast-api-usuario is a back api for manage user, teachers and class
 
-## Installation
+## Instalación
 
 Crear la maquina virtual de mysql
     podman run --name podman-mysql -p 3306:3306 -e      MYSQL_ROOT_PASSWORD=root -d docker.io/mysql:latest
@@ -26,3 +25,8 @@ Crear las tablas
     >> create_tables() 
 
 ![alt text](image.png)
+
+## Ejecución
+    uvicorn main:app --log-config log.ini
+
+    ![alt text](image-1.png)
